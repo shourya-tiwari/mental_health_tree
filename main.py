@@ -63,7 +63,7 @@ async def read_index():
     return FileResponse('index.html')
 
 # Create a route for the results page
-@app.get("/results", response_class=FileResponse)
+@app.get("/results.html", response_class=FileResponse)
 async def read_results():
     return FileResponse('results.html')
 
