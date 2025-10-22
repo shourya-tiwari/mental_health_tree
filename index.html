@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Tree</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+            --secondary-gradient: linear-gradient(135deg, #b8e6b8 0%, #a8e6cf 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --glass-bg: rgba(255, 255, 255, 0.3);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --shadow-medium: 0 15px 35px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4f1d4 30%, #a8e6cf 70%, #7fcdcd 100%);
+            background-attachment: fixed;
+            color: #2d3748;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d5a2d;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #4a6741;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+
+        /* --- Glass Morphism Cards --- */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* --- Tree Container --- */
+        #tree-container {
+            text-align: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        #tree-image {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tree-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        #health-status {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d5a2d;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- Feedback Box --- */
+        #feedback-box {
+            background: linear-gradient(135deg, rgba(168, 230, 207, 0.3), rgba(127, 205, 205, 0.3));
+            border: 1px solid rgba(168, 230, 207, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #feedback-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #feedback-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        #feedback-box.show::before {
+            left: 100%;
+        }
+
+        #feedback-box strong {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d5a2d;
+            margin-bottom: 15px;
+        }
+
+        #feedback-text {
+            color: #4a6741;
+            font-size: 1rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* --- Form Styling --- */
+        form {
+            padding: 35px;
+            position: relative;
+        }
+
+        form h3 {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2d5a2d;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            margin-bottom: 25px;
+            animation: slideInLeft 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .question:nth-child(2) { animation-delay: 0.1s; }
+        .question:nth-child(3) { animation-delay: 0.2s; }
+        .question:nth-child(4) { animation-delay: 0.3s; }
+        .question:nth-child(5) { animation-delay: 0.4s; }
+        .question:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #4a6741;
+            font-size: 1rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a8e6cf, #7fcdcd);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(168, 230, 207, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(168, 230, 207, 0.6);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a8e6cf, #7fcdcd);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(168, 230, 207, 0.4);
+        }
+
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: 600;
+            color: #4a6741;
+            background: rgba(168, 230, 207, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(168, 230, 207, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            color: #4a6741;
+            font-family: inherit;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(168, 230, 207, 0.6);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 3px rgba(168, 230, 207, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #7a9c7a;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+            color: #2d5a2d;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(168, 230, 207, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(168, 230, 207, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        /* --- Loading Animation --- */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            #tree-image {
+                width: 250px;
+                height: 250px;
+            }
+            
+            form {
+                padding: 25px;
+            }
+            
+            form h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            #tree-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Mental Health Tree 🌳</h1>
+        <p class="subtitle">Track your wellness journey with personalized AI insights</p>
+
+        <div class="card" id="tree-container">
+            <div id="tree-image">
+                <span>Loading Tree...</span>
+            </div>
+            <h3 id="health-status">Current Health: --</h3>
+        </div>
+
+
+        <div class="card">
+            <form id="checkin-form" onsubmit="return false;">
+                <h3>Daily Check-in</h3>
+                <div class="question">
+                    <label for="mood">1. How was your mood today? (1=Low, 5=High) <span class="range-value" id="mood-value">3</span></label>
+                    <input type="range" id="mood" min="1" max="5" value="3">
+                </div>
+                <div class="question">
+                    <label for="anxiety">2. How anxious did you feel? (1=High, 5=Low) <span class="range-value" id="anxiety-value">3</span></label>
+                    <input type="range" id="anxiety" min="1" max="5" value="3">
+                </div>
+                <div class="question">
+                    <label for="motivation">3. How motivated were you? (1=Low, 5=High) <span class="range-value" id="motivation-value">3</span></label>
+                    <input type="range" id="motivation" min="1" max="5" value="3">
+                </div>
+                <div class="question">
+                    <label for="connection">4. How connected did you feel? (1=Low, 5=High) <span class="range-value" id="connection-value">3</span></label>
+                    <input type="range" id="connection" min="1" max="5" value="3">
+                </div>
+                <div class="question">
+                    <label for="free_text">5. Any thoughts or feelings to share?</label>
+                    <textarea id="free_text" rows="4" placeholder="Today I felt..."></textarea>
+                </div>
+                <button type="button" id="submit-button">Submit Check-in</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get references to all the important HTML elements
+        const treeImageDiv = document.getElementById('tree-image');
+        const healthStatus = document.getElementById('health-status');
+        const form = document.getElementById('checkin-form');
+        const submitButton = document.getElementById('submit-button');
+
+        // Range value displays
+        const moodValue = document.getElementById('mood-value');
+        const anxietyValue = document.getElementById('anxiety-value');
+        const motivationValue = document.getElementById('motivation-value');
+        const connectionValue = document.getElementById('connection-value');
+
+        // This is the URL of your Python server
+        const API_BASE_URL = '';
+
+        // Update range value displays
+        function updateRangeValues() {
+            moodValue.textContent = document.getElementById('mood').value;
+            anxietyValue.textContent = document.getElementById('anxiety').value;
+            motivationValue.textContent = document.getElementById('motivation').value;
+            connectionValue.textContent = document.getElementById('connection').value;
+        }
+
+        // Add event listeners for range sliders
+        document.getElementById('mood').addEventListener('input', updateRangeValues);
+        document.getElementById('anxiety').addEventListener('input', updateRangeValues);
+        document.getElementById('motivation').addEventListener('input', updateRangeValues);
+        document.getElementById('connection').addEventListener('input', updateRangeValues);
+
+        // Initialize range values
+        updateRangeValues();
+
+        /**
+         * Loads current tree health from server and updates display
+         */
+        async function loadTreeHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/tree-health`);
+                const data = await response.json();
+
+                // Update health status
+                healthStatus.textContent = `Current Health: ${data.health_score}`;
+
+                // Load appropriate tree image
+                loadTreeImage(data.health_score);
+
+            } catch (error) {
+                console.error('Failed to load tree health:', error);
+                treeImageDiv.innerHTML = "<span>Could not connect to server.</span>";
+            }
+        }
+
+        function loadTreeImage(health) {
+            let imageFile = '';
+
+            if (health > 80) {
+                imageFile = 'images/tree_flourishing.jpg';
+            } else if (health > 60) {
+                imageFile = 'images/tree_healthy.jpg';
+            } else if (health > 40) {
+                imageFile = 'images/tree_neutral.jpg';
+            } else if (health > 20) {
+                imageFile = 'images/tree_wilting.jpg';
+            } else {
+                imageFile = 'images/tree_rotten.jpg';
+            }
+
+            // Create image element
+            const img = document.createElement('img');
+            img.src = imageFile;
+            img.alt = 'Mental Health Tree';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '18px';
+            
+            img.onload = function() {
+                treeImageDiv.innerHTML = '';
+                treeImageDiv.appendChild(img);
+            };
+            img.onerror = function() {
+                treeImageDiv.innerHTML = `<span>Tree Image: ${imageFile}</span>`;
+            };
+        }
+
+        /**
+         * Handles form submission and navigates to results page
+         */
+        submitButton.addEventListener('click', async (e) => {
+            e.preventDefault(); // Stop the page from reloading
+            
+            // Show loading state
+            submitButton.innerHTML = '<span class="loading"></span> Processing...';
+            submitButton.disabled = true;
+
+            // Collect form data
+            const payload = {
+                mood: parseInt(document.getElementById('mood').value),
+                anxiety: parseInt(document.getElementById('anxiety').value),
+                motivation: parseInt(document.getElementById('motivation').value),
+                connection: parseInt(document.getElementById('connection').value),
+                free_text: document.getElementById('free_text').value
+            };
+
+            try {
+                // Send data to API
+                const response = await fetch(`${API_BASE_URL}/checkin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                // Navigate to results page with data
+                const params = new URLSearchParams({
+                    mood: result.mood_rating,
+                    feedback: result.feedback,
+                    health: result.new_health_score
+                });
+                
+                window.location.href = `results.html?${params.toString()}`;
+
+            } catch (error) {
+                console.error('Failed to submit check-in:', error);
+                alert('Error submitting check-in. Is the server running?');
+                
+                // Reset button state on error
+                submitButton.textContent = "Submit Check-in";
+                submitButton.disabled = false;
+            }
+        });
+
+        // Initialize page on load
+        loadTreeHealth();
+    </script>
+</body>
+</html>

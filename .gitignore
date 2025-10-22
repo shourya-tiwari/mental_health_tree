@@ -1,0 +1,8 @@
+# Private data
+mental_health_ai_data.json
+
+# Python cache
+__pycache__/
+
+# OS-specific files
+.DS_Store
