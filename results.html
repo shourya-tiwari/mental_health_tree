@@ -272,6 +272,35 @@
             color: #2d5a2d;
             text-decoration: underline;
         }
+        /* --- Alert Box Styling --- */
+        #alert-box {
+            background: #ff4444;
+            border: 3px solid #cc0000;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px; /* Added margin */
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+            display: none;
+            animation: alertPulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        #alert-box.show {
+            display: block;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { 
+                box-shadow: 0 4px 20px rgba(255, 68, 68, 0.4);
+            }
+            50% { 
+                box-shadow: 0 8px 30px rgba(255, 68, 68, 0.8);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -280,6 +309,8 @@
         <p class="subtitle">Here's your personalized assessment</p>
 
         <div class="card">
+            <div id="alert-box" style="display: none;">
+            </div>
             <div id="tree-container">
                 <div id="tree-image">
                     <span>Loading Tree...</span>
@@ -358,11 +389,11 @@
         }
 
         function goBack() {
-            window.location.href = 'index.html';
+            window.location.href = '/app';
         }
 
         function checkInAgain() {
-            window.location.href = 'index.html';
+            window.location.href = '/app';
         }
     </script>
 

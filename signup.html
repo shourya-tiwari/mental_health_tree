@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - Mental Health Tree</title>
+    <title>Sign Up - Mental Health Tree</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -39,7 +39,7 @@
         }
 
         .container {
-            max-width: 400px;
+            max-width: 450px;
             width: 100%;
             animation: fadeInUp 0.8s ease-out;
         }
@@ -102,6 +102,9 @@
         }
 
         input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
         input[type="password"] {
             width: 100%;
             padding: 15px;
@@ -116,6 +119,9 @@
         }
 
         input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus,
         input[type="password"]:focus {
             outline: none;
             border-color: rgba(168, 230, 207, 0.6);
@@ -168,23 +174,29 @@
             left: 100%;
         }
 
-        .signup-link {
+        .signin-link {
             text-align: center;
             margin-top: 25px;
             color: #4a6741;
             font-size: 0.95rem;
         }
 
-        .signup-link a {
+        .signin-link a {
             color: #2d5a2d;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
 
-        .signup-link a:hover {
+        .signin-link a:hover {
             color: #1a4a1a;
             text-decoration: underline;
+        }
+
+        .optional {
+            font-size: 0.85rem;
+            color: #7a9c7a;
+            font-style: italic;
         }
 
         /* --- Responsive Design --- */
@@ -205,26 +217,46 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome Back 🌳</h1>
-        <p class="subtitle">Continue your wellness journey</p>
+        <h1>Mental Health Tree 🌳</h1>
+        <p class="subtitle">Join our wellness community</p>
 
         <div class="card">
-            <form onsubmit="window.location.href='/app'; return false;">
+            <form onsubmit="window.location.href='/login'; return false;">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+                </div>
+
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
                 </div>
 
-                <button type="submit">Login</button>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" placeholder="Your age" min="13" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email <span class="optional">(optional)</span></label>
+                    <input type="email" id="email" name="email" placeholder="your.email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Create Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a secure password" required>
+                </div>
+
+                <button type="submit">Sign Up</button>
             </form>
 
-            <div class="signup-link">
-                New user? <a href="/">Sign Up</a>
+            <div class="signin-link">
+                Already have an account? <a href="/login">Sign In</a>
             </div>
         </div>
     </div>

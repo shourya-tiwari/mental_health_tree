@@ -606,11 +606,16 @@
          * Handles form submission and navigates to results page
          */
         submitButton.addEventListener('click', async (e) => {
-            e.preventDefault(); // Stop the page from reloading
+            e.preventDefault(); // Good, keeps things safe
             
             // Show loading state
             submitButton.innerHTML = '<span class="loading"></span> Processing...';
             submitButton.disabled = true;
+
+            const alertBox = document.getElementById('alert-box');
+            // --- HIDE OLD ALERTS ---
+            alertBox.classList.remove('show');
+            alertBox.style.display = 'none'; // Make sure it's hidden
 
             // Collect form data
             const payload = {
@@ -635,32 +640,39 @@
 
                 const result = await response.json();
 
-                // Handle emergency and low score alerts
-                const alertBox = document.getElementById('alert-box');
-                
+                // --- 1. CHECK FOR ALERTS ---
+                let alertMessage = "";
+                let redirectDelay = 500; // Default delay (half a second)
+
                 if (result.is_emergency) {
-                    alertBox.innerHTML = "CONTACTING AUTHORITIES. Your health has been set to 7.";
-                    alertBox.classList.add('show');
+                    alertMessage = "CONTACTING AUTHORITIES. Your health has been set to 7.";
+                    redirectDelay = 4000; // 4 second delay to read
                 } else if (result.new_health_score < 10) {
-                    alertBox.innerHTML = "CONTACTING AUTHORITIES. Your score is critically low.";
-                    alertBox.classList.add('show');
+                    alertMessage = "CONTACTING AUTHORITIES. Your score is critically low.";
+                    redirectDelay = 4000; // 4 second delay to read
                 } else if (result.new_health_score < 25) {
-                    alertBox.innerHTML = "Your score is very low. Please consider contacting a professional. Here are some resources: <a href='tel:988' style='color: white; text-decoration: underline;'>988 Suicide & Crisis Lifeline</a>.";
-                    alertBox.classList.add('show');
-                } else {
-                    alertBox.classList.remove('show');
-                    alertBox.style.display = 'none';
+                    alertMessage = "Your score is very low. Please consider contacting a professional. Here are some resources: <a href='tel:988' style='color: white; text-decoration: underline;'>988 Suicide & Crisis Lifeline</a>.";
+                    redirectDelay = 4000; // 4 second delay to read
                 }
 
-                // --- NEW WAY: Save data to session and redirect cleanly ---
-                // 1. Save the data to the browser's session
+                // --- 2. SHOW ALERTS ON *THIS* PAGE IF NEEDED ---
+                if (alertMessage) {
+                    alertBox.innerHTML = alertMessage;
+                    alertBox.style.display = 'block'; // Force it to be visible
+                    alertBox.classList.add('show'); // Add animation class
+                }
+
+                // --- 3. SAVE *ALL* DATA TO SESSIONSTORAGE (FOR NEXT PAGE) ---
                 sessionStorage.setItem('feedback', result.feedback);
                 sessionStorage.setItem('mood', result.mood_rating);
                 sessionStorage.setItem('health_score', result.new_health_score);
+                // Also save alert info for the results page
+                sessionStorage.setItem('alert_message', alertMessage);
 
-                // 2. Redirect to the results page cleanly
-                window.location.href = 'results.html';
-                // --- END NEW WAY ---
+                // --- 4. REDIRECT *AFTER* THE DELAY ---
+                setTimeout(() => {
+                    window.location.href = '/results';
+                }, redirectDelay);
 
             } catch (error) {
                 console.error('Failed to submit check-in:', error);
@@ -670,8 +682,11 @@
                 submitButton.textContent = "Submit Check-in";
                 submitButton.disabled = false;
             }
+            
+            // On success, we just let the button stay as "Processing..."
+            // since the page is about to redirect.
         });
-
+        
         // Initialize page on load
         loadTreeHealth();
     </script>

@@ -58,13 +58,18 @@ app.add_middleware(
 # Mount the 'images' folder to be accessible at '/images'
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
-# Create a route for the main page
+# Create a route for the signup page (new default)
 @app.get("/", response_class=FileResponse)
-async def read_index():
+async def read_signup():
+    return FileResponse('signup.html')
+
+# Create a route for the main app page
+@app.get("/app", response_class=FileResponse)
+async def read_app():
     return FileResponse('index.html')
 
 # Create a route for the results page
-@app.get("/results.html", response_class=FileResponse)
+@app.get("/results", response_class=FileResponse)
 async def read_results():
     return FileResponse('results.html')
 
