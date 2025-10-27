@@ -68,6 +68,11 @@ async def read_index():
 async def read_results():
     return FileResponse('results.html')
 
+# Create a route for the login page
+@app.get("/login", response_class=FileResponse)
+async def read_login():
+    return FileResponse('login.html')
+
 # =============================================================================
 # DATA MANAGEMENT FUNCTIONS
 # =============================================================================

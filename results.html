@@ -301,19 +301,32 @@
     </div>
 
     <script>
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const moodRating = urlParams.get('mood');
-        const feedback = urlParams.get('feedback');
-        const healthScore = urlParams.get('health');
+        window.addEventListener('load', () => {
+            // 1. Get the data from session storage
+            const feedback = sessionStorage.getItem('feedback');
+            const mood = sessionStorage.getItem('mood');
+            // Make sure to get health_score as a number
+            const health_score = parseInt(sessionStorage.getItem('health_score'), 10);
 
-        // Update the page with the results
-        document.getElementById('mood-rating').textContent = `Mood: ${moodRating}`;
-        document.getElementById('health-status').textContent = `Current Health: ${healthScore}`;
-        document.getElementById('feedback-text').textContent = feedback;
+            // 2. Find the elements on your results page
+            const feedbackEl = document.getElementById('feedback-text');
+            const moodEl = document.getElementById('mood-rating');
+            const healthEl = document.getElementById('health-status');
+            const treeImageEl = document.getElementById('tree-image'); 
 
-        // Load tree image based on health score
-        loadTreeImage(parseInt(healthScore));
+            // 3. Put the data into the page
+            if (feedback && !isNaN(health_score)) {
+                if(feedbackEl) feedbackEl.textContent = feedback;
+                if(moodEl) moodEl.textContent = `Mood: ${mood}`;
+                if(healthEl) healthEl.textContent = `Current Health: ${health_score}`;
+
+                // 4. Set the correct tree image
+                loadTreeImage(health_score);
+            } else {
+                // No data found, maybe user just loaded the page directly
+                if(feedbackEl) feedbackEl.textContent = "No feedback found. Please go back and complete a check-in.";
+            }
+        });
 
         function loadTreeImage(health) {
             const treeImageDiv = document.getElementById('tree-image');
@@ -354,10 +367,11 @@
     </script>
 
     <footer>
-        <p>&copy; 2025 Mental Health Tree</p>
+        <p>&copy; 2025 Mental Health Tree. All rights reserved.</p>
         <p>
-            <a href="#" onclick="alert('Privacy Policy - Coming Soon')">Privacy Policy</a>
-            <a href="#" onclick="alert('Terms of Service - Coming Soon')">Terms of Service</a>
+            <a href="#" onclick="alert('Privacy Policy - Coming Soon')">Privacy Policy</a> | 
+            <a href="#" onclick="alert('Terms of Service - Coming Soon')">Terms of Service</a> |
+            <a href="/login">Logout</a>
         </p>
     </footer>
 </body>

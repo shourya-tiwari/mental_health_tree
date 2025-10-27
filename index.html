@@ -652,14 +652,15 @@
                     alertBox.style.display = 'none';
                 }
 
-                // Navigate to results page with data
-                const params = new URLSearchParams({
-                    mood: result.mood_rating,
-                    feedback: result.feedback,
-                    health: result.new_health_score
-                });
-                
-                window.location.href = `results.html?${params.toString()}`;
+                // --- NEW WAY: Save data to session and redirect cleanly ---
+                // 1. Save the data to the browser's session
+                sessionStorage.setItem('feedback', result.feedback);
+                sessionStorage.setItem('mood', result.mood_rating);
+                sessionStorage.setItem('health_score', result.new_health_score);
+
+                // 2. Redirect to the results page cleanly
+                window.location.href = 'results.html';
+                // --- END NEW WAY ---
 
             } catch (error) {
                 console.error('Failed to submit check-in:', error);
@@ -676,10 +677,11 @@
     </script>
 
     <footer>
-        <p>&copy; 2025 Mental Health Tree</p>
+        <p>&copy; 2025 Mental Health Tree. All rights reserved.</p>
         <p>
-            <a href="#" onclick="alert('Privacy Policy - Coming Soon')">Privacy Policy</a>
-            <a href="#" onclick="alert('Terms of Service - Coming Soon')">Terms of Service</a>
+            <a href="#" onclick="alert('Privacy Policy - Coming Soon')">Privacy Policy</a> | 
+            <a href="#" onclick="alert('Terms of Service - Coming Soon')">Terms of Service</a> |
+            <a href="/login">Logout</a>
         </p>
     </footer>
 </body>
