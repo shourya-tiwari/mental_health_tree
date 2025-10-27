@@ -186,6 +186,36 @@
             font-weight: 400;
         }
 
+        /* --- Alert Box Styling --- */
+        #alert-box {
+            background: #ff4444;
+            border: 3px solid #cc0000;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+            display: none;
+            animation: alertPulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        #alert-box.show {
+            display: block;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { 
+                box-shadow: 0 4px 20px rgba(255, 68, 68, 0.4);
+            }
+            50% { 
+                box-shadow: 0 8px 30px rgba(255, 68, 68, 0.8);
+            }
+        }
+
         /* --- Form Styling --- */
         form {
             padding: 35px;
@@ -411,6 +441,35 @@
                 padding: 20px;
             }
         }
+
+        /* --- Footer Styling --- */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: #4a6741;
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: #4a6741;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #2d5a2d;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -449,6 +508,9 @@
                     <label for="free_text">5. Any thoughts or feelings to share?</label>
                     <textarea id="free_text" rows="4" placeholder="Today I felt..."></textarea>
                 </div>
+                
+                <div id="alert-box"></div>
+                
                 <button type="button" id="submit-button">Submit Check-in</button>
             </form>
         </div>
@@ -573,6 +635,23 @@
 
                 const result = await response.json();
 
+                // Handle emergency and low score alerts
+                const alertBox = document.getElementById('alert-box');
+                
+                if (result.is_emergency) {
+                    alertBox.innerHTML = "CONTACTING AUTHORITIES. Your health has been set to 7.";
+                    alertBox.classList.add('show');
+                } else if (result.new_health_score < 10) {
+                    alertBox.innerHTML = "CONTACTING AUTHORITIES. Your score is critically low.";
+                    alertBox.classList.add('show');
+                } else if (result.new_health_score < 25) {
+                    alertBox.innerHTML = "Your score is very low. Please consider contacting a professional. Here are some resources: <a href='tel:988' style='color: white; text-decoration: underline;'>988 Suicide & Crisis Lifeline</a>.";
+                    alertBox.classList.add('show');
+                } else {
+                    alertBox.classList.remove('show');
+                    alertBox.style.display = 'none';
+                }
+
                 // Navigate to results page with data
                 const params = new URLSearchParams({
                     mood: result.mood_rating,
@@ -595,5 +674,13 @@
         // Initialize page on load
         loadTreeHealth();
     </script>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Tree</p>
+        <p>
+            <a href="#" onclick="alert('Privacy Policy - Coming Soon')">Privacy Policy</a>
+            <a href="#" onclick="alert('Terms of Service - Coming Soon')">Terms of Service</a>
+        </p>
+    </footer>
 </body>
 </html>

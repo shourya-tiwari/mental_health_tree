@@ -243,6 +243,35 @@
                 height: 200px;
             }
         }
+
+        /* --- Footer Styling --- */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: #4a6741;
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: #4a6741;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #2d5a2d;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -323,5 +352,13 @@
             window.location.href = 'index.html';
         }
     </script>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Tree</p>
+        <p>
+            <a href="#" onclick="alert('Privacy Policy - Coming Soon')">Privacy Policy</a>
+            <a href="#" onclick="alert('Terms of Service - Coming Soon')">Terms of Service</a>
+        </p>
+    </footer>
 </body>
 </html>

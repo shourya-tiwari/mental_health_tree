@@ -38,6 +38,7 @@ class CheckinResponse(BaseModel):
     mood_rating: str
     feedback: str
     new_health_score: int
+    is_emergency: bool = False
 
 # =============================================================================
 # FASTAPI SETUP
@@ -227,6 +228,12 @@ def create_checkin(request: CheckinRequest):
     # Cap health score between 0 and 100
     current_health = max(0, min(100, current_health))
 
+    # Emergency detection logic
+    is_emergency = False
+    if "die" in request.free_text.lower():
+        is_emergency = True
+        current_health = 7
+
     # Create new entry and save data
     today_str = datetime.now().strftime("%Y-%m-%d")
     new_entry = {
@@ -245,7 +252,8 @@ def create_checkin(request: CheckinRequest):
     return CheckinResponse(
         mood_rating=mood_rating,
         feedback=feedback,
-        new_health_score=current_health
+        new_health_score=current_health,
+        is_emergency=is_emergency
     )
 
 @app.get("/tree-health")
